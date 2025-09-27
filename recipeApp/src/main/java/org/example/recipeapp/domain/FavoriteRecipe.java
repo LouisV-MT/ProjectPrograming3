@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,6 +32,6 @@ public class FavoriteRecipe {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "favorited_at")
-    private Instant favoritedAt;
+    private LocalDateTime favoritedAt;
 
 }

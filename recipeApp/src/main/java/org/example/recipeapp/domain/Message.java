@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,7 +40,7 @@ public class Message {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "sent_at")
-    private Instant sentAt;
+    private LocalDateTime sentAt;
 
     @ColumnDefault("0")
     @Column(name = "is_read")
