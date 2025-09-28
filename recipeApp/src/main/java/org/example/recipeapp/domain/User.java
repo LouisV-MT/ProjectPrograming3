@@ -46,7 +46,7 @@ public class User implements UserDetails {
 
     @Column(name = "role",nullable = false)
     @Enumerated(EnumType.STRING)
-    private String role;
+    private Role role;
 
 
     @Column(name = "height_cm")
@@ -77,7 +77,14 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities(){
         return role.getAuthorities();
     }
-
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    @Override
+    public String getUsername() {
+        return username;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
