@@ -5,10 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +15,8 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,13 +43,10 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Lob
+
     @Column(name = "role",nullable = false)
     @Enumerated(EnumType.STRING)
     private String role;
-    public enum  Role {
-        USER, ADMIN
-    }
 
 
     @Column(name = "height_cm")
@@ -81,7 +75,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + this.role));
+        return role.getAuthorities();
     }
 
 
