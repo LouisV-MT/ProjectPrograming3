@@ -1,0 +1,25 @@
+<< current date goes here >>
+1. What I have done / not done since last Scrum?
+2. What I plan to do from this scrum to next? (next 24 hours)
+3. Where do I need assistance? What do I need to figure out?
+
+
+<< Friday 26 Sep 2025 >>
+Louis
+1. What I have done / not done since last Scrum?
+Done: Find out more about deployment options, setup trello, setup github
+2. What I plan to do from this scrum to next? (next 24 hours)
+Jpa Entities of all the tables(Full version because we might use them)
+3. Where do I need assistance? What do I need to figure out?
+Data seeding for data demo, deployment options
+
+<< Monday 29 Sep 2025 >>
+Louis
+1. What I have done / not done since last Scrum?
+Done: JPA Entities of all the tables(Full version because we might use them)
+Start working on data seeding(based on webflux/webclient)(maybe have option for admin to add recipe based on options from the mealdb)
+Deciding on deployment options: render for hosting, aiven.io for database, cloudfare r2 for file storage(image)
+2. What I plan to do from this scrum to next? (next 24 hours)
+Finish data seeding. Watch a lot more tutorial on this when off computer
+3. Where do I need assistance? What do I need to figure out?
+Nothing
