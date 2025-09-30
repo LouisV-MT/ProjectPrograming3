@@ -37,3 +37,14 @@ Peng
 3. Where do I need assistance? What do I need to figure out?
 - Need to confirm with Triet if starting from a minimal setup is OK.
 - Will share any useful tutorial links on Trello for easier follow-up.
+
+<< Tuesday 30 Sep 2025 >>
+Louis
+1. What I have done / not done since last Scrum?
+- Not done: finishing data seeding,
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Finishing data seeding,
+- Fix trello board
+- Try to signup all the deployment options, test out
+3. Where do I need assistance? What do I need to figure out?
+- database seeding
