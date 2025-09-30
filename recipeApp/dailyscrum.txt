@@ -23,3 +23,17 @@ Deciding on deployment options: render for hosting, aiven.io for database, cloud
 Finish data seeding. Watch a lot more tutorial on this when off computer
 3. Where do I need assistance? What do I need to figure out?
 Asking about trello board next class. 
+
+Peng
+1. What I have done / not done since last Scrum?
+- Tried to run the project locally but ran into issues with UserRepository and security config.
+- Discussed with Triet about starting small (main app + simple controller first).
+
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Simplify the project to the smallest runnable Spring Boot app.
+- Gradually add back UserRepository and JpaUserDetailsService.
+- Watch tutorials on Spring Security basics.
+
+3. Where do I need assistance? What do I need to figure out?
+- Need to confirm with Triet if starting from a minimal setup is OK.
+- Will share any useful tutorial links on Trello for easier follow-up.
