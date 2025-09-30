@@ -22,4 +22,4 @@ Deciding on deployment options: render for hosting, aiven.io for database, cloud
 2. What I plan to do from this scrum to next? (next 24 hours)
 Finish data seeding. Watch a lot more tutorial on this when off computer
 3. Where do I need assistance? What do I need to figure out?
-Nothing
+Asking about trello board next class. 
