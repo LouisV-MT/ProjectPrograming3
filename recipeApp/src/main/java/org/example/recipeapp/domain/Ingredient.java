@@ -24,7 +24,4 @@ public class Ingredient {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "ingredient")
-    private Set<org.example.recipeapp.domain.RecipeIngredient> recipeIngredients = new LinkedHashSet<>();
-
 }

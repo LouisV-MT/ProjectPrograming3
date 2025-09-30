@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -32,6 +33,7 @@ public class FavoriteRecipe {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "favorited_at")
+    @CreationTimestamp
     private LocalDateTime favoritedAt;
 
 }

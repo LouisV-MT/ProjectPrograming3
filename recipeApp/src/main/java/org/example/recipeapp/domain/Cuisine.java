@@ -18,7 +18,7 @@ public class Cuisine {
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name",unique = true, nullable = false, length = 100)
     private String name;
 
 }
