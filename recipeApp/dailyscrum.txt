@@ -48,3 +48,15 @@ Louis
 - Try to signup all the deployment options, test out
 3. Where do I need assistance? What do I need to figure out?
 - database seeding
+
+Peng
+1. What I have done / not done since last Scrum?
+- Not much progress today, just reviewed our plan.
+
+2. What I plan to do from this scrum to next?
+- Simplify project to minimal runnable app.
+- Try simple controller + UserRepository.
+- Watch a short Spring Security tutorial.
+
+3. Where do I need assistance?
+- Might need help on local DB setup.
