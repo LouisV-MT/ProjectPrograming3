@@ -44,14 +44,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/register", "/login").permitAll()
+                        .requestMatchers("/", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/", true)
-                        .permitAll()
+                        .permitAll()   // 使用 Spring 自带的登录页
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
@@ -63,6 +60,30 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers("/", "/register", "/login").permitAll()
+//                        .anyRequest().authenticated()
+//                )
+//
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("/", true)
+//                        .permitAll()
+//                )
+//                .logout(logout -> logout
+//                        .logoutSuccessUrl("/")
+//                        .permitAll()
+//                )
+//                .csrf(csrf -> csrf
+//                        .csrfTokenRepository(csrfTokenRepository())
+//                );
+//
+//        return http.build();
+//    }
 
 
 //    @Bean
