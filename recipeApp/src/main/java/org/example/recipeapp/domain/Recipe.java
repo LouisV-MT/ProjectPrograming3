@@ -24,6 +24,10 @@ public class Recipe {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "external_id", unique = true)
+    private String externalId;
+
+
     @Size(max = 255)
     @NotNull
     @Column(name = "name", nullable = false)
@@ -76,5 +80,10 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Review> reviews = new LinkedHashSet<>();
+
+    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private NutritionInfo nutritionInfo;
+
+
 
 }

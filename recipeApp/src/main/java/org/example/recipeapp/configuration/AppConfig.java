@@ -9,8 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class AppConfig {
 
     @Bean
-    @Qualifier("mealDBWebClient")
-    public WebClient mealDBWebclient(){
+    @Qualifier("mealDbWebClient")
+    public WebClient mealDbWebclient(){
         return WebClient.builder()
                 .baseUrl("https://www.themealdb.com/api/json/v1/1/")
                 .build();

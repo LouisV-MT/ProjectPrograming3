@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
     Optional <Recipe> findByName(String name);
     List<Recipe>  findByCategoryName(String categoryName);
+    boolean existsByExternalId(String externalId);
 }

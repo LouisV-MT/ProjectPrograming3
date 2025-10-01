@@ -24,4 +24,8 @@ public class Ingredient {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
+    public Ingredient(String name) {
+        this.name = name;
+
+    }
 }

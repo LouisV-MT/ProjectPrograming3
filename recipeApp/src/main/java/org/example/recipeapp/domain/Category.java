@@ -3,8 +3,7 @@ package org.example.recipeapp.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -13,6 +12,9 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "categories", schema = "recipe_app")
+
+@NoArgsConstructor
+
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +27,7 @@ public class Category {
     private String name;
 
 
+    public Category(String name) {
+        this.name = name;
+    }
 }

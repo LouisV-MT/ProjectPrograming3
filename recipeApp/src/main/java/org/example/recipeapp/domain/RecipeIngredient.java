@@ -16,6 +16,12 @@ public class RecipeIngredient {
     @EmbeddedId
     private RecipeIngredientId id;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("recipeId")
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
     @MapsId
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -26,5 +32,6 @@ public class RecipeIngredient {
     @NotNull
     @Column(name = "measurement", nullable = false, length = 100)
     private String measurement;
+
 
 }

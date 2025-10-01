@@ -21,4 +21,7 @@ public class Cuisine {
     @Column(name = "name",unique = true, nullable = false, length = 100)
     private String name;
 
+    public Cuisine(String name) {
+        this.name = name;
+    }
 }
