@@ -204,8 +204,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             }
         }
         log.info("Saved recipe: {}", savedRecipe.getName());
-
-
         updateRecipeWithNutrition(savedRecipe);
 
 
