@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface CuisineRepository extends JpaRepository<Cuisine, Integer> {
-    Optional<Cuisine> findCuisineByName(String name);
+    Optional<Cuisine> findByName(String name);
 }
