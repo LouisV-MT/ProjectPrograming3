@@ -71,3 +71,13 @@ Louis
 +Help Peng on his concerns, working on deployment
 3. Where do I need assistance? What do I need to figure out?
 Nothing
+
+Peng
+1. What I have done / not done since last Scrum?
+- Fixed User entity and JpaUserDetailsService.
+- Set up SecurityConfig and verified login page works.
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Test login with DB users.
+- Commit and push current progress.
+3. Where do I need assistance? What do I need to figure out?
+- Might need help debugging DB authentication.
