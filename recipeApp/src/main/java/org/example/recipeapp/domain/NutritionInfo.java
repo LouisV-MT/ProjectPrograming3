@@ -13,7 +13,8 @@ import java.util.Set;
 @Table(name="nutrition_info")
 public class NutritionInfo {
     @Id
-    private Integer recipeId;
+    @Column(name = "recipe_id")
+    private Integer id;
 
 
     @MapsId

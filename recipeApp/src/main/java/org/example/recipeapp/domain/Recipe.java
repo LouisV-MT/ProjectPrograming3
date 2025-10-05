@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "recipes", schema = "recipe_app")
 public class Recipe {
     @Id
@@ -51,8 +53,6 @@ public class Recipe {
     @Column(name = "source_url")
     private String sourceUrl;
 
-    @Column(name = "calories")
-    private Integer calories;
 
     @ColumnDefault("0.00")
     @Column(name = "avg_rating", precision = 3, scale = 2)
@@ -65,7 +65,6 @@ public class Recipe {
     @ManyToOne
     @JoinColumn(name="cuisine_id")
     private Cuisine cuisine;
-
 
 
 

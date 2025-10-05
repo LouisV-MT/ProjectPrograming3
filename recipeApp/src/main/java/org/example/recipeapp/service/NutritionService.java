@@ -2,8 +2,8 @@ package org.example.recipeapp.service;
 
 import org.example.recipeapp.domain.NutritionInfo;
 import org.example.recipeapp.domain.Recipe;
-import org.example.recipeapp.dto.EdamamDto;
-import org.example.recipeapp.dto.EdamamRequestDto;
+import org.example.recipeapp.dto.NutritionixRequestDto;
+import org.example.recipeapp.dto.NutritionixResponseDto;
 import org.example.recipeapp.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,26 +11,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+
 import java.util.stream.Collectors;
 
 @Service
 public class NutritionService {
 
-    private final WebClient edamamWebClient;
+    private final WebClient nutritionixWebClient;
     private final RecipeRepository recipeRepository;
 
-    @Value("${edamam.api.id}")
-    private String edamamAppId;
+    @Value("${nutritionix.api.id}")
+    private String nutritionixAppId;
 
-    @Value("${edamam.api.key}")
-    private String edamamAppKey;
+    @Value("${nutritionix.api.key}")
+    private String nutritionixAppKey;
 
-    public NutritionService(@Qualifier("edamamWebClient") WebClient edamamWebClient,
+    public NutritionService(@Qualifier("nutritionixWebClient") WebClient nutritionixWebClient,
                             RecipeRepository recipeRepository) {
-        this.edamamWebClient = edamamWebClient;
+        this.nutritionixWebClient = nutritionixWebClient;
         this.recipeRepository = recipeRepository;
     }
 
@@ -39,43 +37,55 @@ public class NutritionService {
     public void updateRecipeWithNutrition(Recipe recipe) {
         System.out.println("Fetching nutrition data for recipe: " + recipe.getName());
 
-        List<String> ingredientList = recipe.getRecipeIngredients().stream()
-                .map(ri -> ri.getMeasurement() + " " + ri.getIngredient().getName())
-                .collect(Collectors.toList());
-
-        if (ingredientList.isEmpty()) {
+        if (recipe.getRecipeIngredients() == null || recipe.getRecipeIngredients().isEmpty()) {
             System.out.println("WARN: No ingredients for recipe '" + recipe.getName() + "', skipping nutrition analysis.");
             return;
         }
 
-        EdamamRequestDto requestBody = new EdamamRequestDto(recipe.getName(), ingredientList);
+
+        String query = recipe.getRecipeIngredients().stream()
+                .map(ri -> ri.getMeasurement() + " " + ri.getIngredient().getName())
+                .collect(Collectors.joining("\n"));
+
+        System.out.println("Fetching nutrition data for query: \n" + query);
+        NutritionixRequestDto requestBody = new NutritionixRequestDto(query);
 
         try {
-            EdamamDto nutritionDto = edamamWebClient.post()
-                    .uri(uriBuilder -> uriBuilder.path("/api/nutrition-details")
-                            .queryParam("app_id", edamamAppId)
-                            .queryParam("app_key", edamamAppKey)
-                            .build())
+            NutritionixResponseDto nutritionDto = nutritionixWebClient.post()
+                    .uri("/v2/natural/nutrients")
+                    .header("x-app-id", nutritionixAppId)
+                    .header("x-app-key", nutritionixAppKey)
                     .bodyValue(requestBody)
                     .retrieve()
-                    .bodyToMono(EdamamDto.class)
+                    .bodyToMono(NutritionixResponseDto.class)
                     .block();
 
-            if (nutritionDto != null) {
-                NutritionInfo nutritionInfo = new NutritionInfo();
-                nutritionInfo.setCalories(nutritionDto.getCalories());
-                nutritionInfo.setTotalWeight(nutritionDto.getTotalWeight());
+            if (nutritionDto != null && nutritionDto.getFoods() != null) {
+                System.out.println("Successfully fetched nutrition data for recipe: " + recipe.getName());
 
-                if (nutritionDto.getHealthLabels() != null) {
-                    nutritionInfo.setHealthLabels(new HashSet<>(nutritionDto.getHealthLabels()));
+                double totalCalories = 0;
+                double totalProtein = 0;
+                double totalFat = 0;
+                double totalCarbs = 0;
+
+                for (NutritionixResponseDto.Food food : nutritionDto.getFoods()) {
+                    totalCalories += food.getCalories() != null ? food.getCalories() : 0;
+                    totalProtein += food.getProtein() != null ? food.getProtein() : 0;
+                    totalFat += food.getTotalFat() != null ? food.getTotalFat() : 0;
+                    totalCarbs += food.getTotalCarbohydrate() != null ? food.getTotalCarbohydrate() : 0;
                 }
 
-                Map<String, EdamamDto.NutrientInfo> nutrients = nutritionDto.getTotalNutrients();
-                if (nutrients != null) {
-                    nutritionInfo.setFat(nutrients.containsKey("FAT") ? nutrients.get("FAT").getQuantity() : 0.0);
-                    nutritionInfo.setCarbs(nutrients.containsKey("CHOCDF") ? nutrients.get("CHOCDF").getQuantity() : 0.0);
-                    nutritionInfo.setProtein(nutrients.containsKey("PROCNT") ? nutrients.get("PROCNT").getQuantity() : 0.0);
+
+                NutritionInfo nutritionInfo = recipe.getNutritionInfo();
+                if (nutritionInfo == null) {
+                    nutritionInfo = new NutritionInfo();
+                    nutritionInfo.setRecipe(recipe);
                 }
+
+                nutritionInfo.setCalories((int) Math.round(totalCalories));
+                nutritionInfo.setProtein(totalProtein);
+                nutritionInfo.setFat(totalFat);
+                nutritionInfo.setCarbs(totalCarbs);
 
                 recipe.setNutritionInfo(nutritionInfo);
                 recipeRepository.save(recipe);

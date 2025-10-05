@@ -23,4 +23,12 @@ public class AppConfig {
                 .baseUrl("https://api.edamam.com/")
                 .build();
     }
+
+    @Bean
+    @Qualifier("nutritionixWebClient")
+    public WebClient nutritionixWebClient(){
+        return WebClient.builder()
+                .baseUrl("https://trackapi.nutritionix.com/")
+                .build();
+    }
 }

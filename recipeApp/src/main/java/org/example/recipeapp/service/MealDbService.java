@@ -52,8 +52,8 @@ public class MealDbService {
     }
 
     private Recipe saveRecipeFromMealDb(MealDBDto.Meal mealData, User author) {
-        Category category = categoryRepository.findByName(mealData.getCategory()).orElseGet(() -> new Category(mealData.getCategory()));
-        Cuisine cuisine = cuisineRepository.findByName(mealData.getArea()).orElseGet(() -> new Cuisine(mealData.getArea()));
+        Category category = categoryRepository.findByName(mealData.getCategory()).orElseGet(() -> categoryRepository.save(new Category(mealData.getCategory())));
+        Cuisine cuisine = cuisineRepository.findByName(mealData.getArea()).orElseGet(() -> cuisineRepository.save(new Cuisine(mealData.getArea())));
 
         Recipe recipe = new Recipe();
         recipe.setExternalId(mealData.getId());
@@ -65,7 +65,7 @@ public class MealDbService {
         recipe.setVideoUrl(mealData.getVideoUrl());
         recipe.setSourceUrl(mealData.getSourceUrl());
         recipe.setAuthor(author);
-        Recipe savedRecipe = recipeRepository.save(recipe);
+
         for (int i = 1; i <= 20; i++) {
             try {
                 Field ingredientField = mealData.getClass().getField("ingredient" + i);
@@ -74,19 +74,28 @@ public class MealDbService {
                 String measurement = (String) measureField.get(mealData);
 
                 if (ingredientName != null && !ingredientName.isBlank()) {
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientName).orElseGet(() -> new Ingredient(ingredientName));
+                    System.out.println("Processing ingredient: " + ingredientName);
+                    Ingredient ingredient = ingredientRepository.findByName(ingredientName)
+                            .orElseGet(() -> ingredientRepository.save(new Ingredient(ingredientName)));
+
+
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
-                    recipeIngredient.setId(new RecipeIngredientId(savedRecipe.getId(), ingredient.getId()));
-                    recipeIngredient.setRecipe(savedRecipe);
+                    recipeIngredient.setId(new RecipeIngredientId());
+                    recipeIngredient.setRecipe(recipe);
                     recipeIngredient.setIngredient(ingredient);
                     recipeIngredient.setMeasurement(measurement);
-                    recipeIngredientRepository.save(recipeIngredient);
+                    recipe.getRecipeIngredients().add(recipeIngredient);
+
                 }
+            } catch (NoSuchFieldException e) {
+                break;
             } catch (Exception e) {
+                System.err.println("An error occurred while processing ingredients: " + e.getMessage());
                 break;
             }
         }
-        System.out.println("Saved recipe: " + savedRecipe.getName());
-        return savedRecipe;
+        Recipe finalRecipe= recipeRepository.save(recipe);
+        System.out.println("Saved recipe: " + finalRecipe.getName());
+        return finalRecipe;
     }
 }

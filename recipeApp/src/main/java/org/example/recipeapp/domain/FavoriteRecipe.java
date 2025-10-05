@@ -31,7 +31,7 @@ public class FavoriteRecipe {
     @JoinColumn(name = "recipe_id", nullable = false)
     private org.example.recipeapp.domain.Recipe recipe;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+
     @Column(name = "favorited_at")
     @CreationTimestamp
     private LocalDateTime favoritedAt;
