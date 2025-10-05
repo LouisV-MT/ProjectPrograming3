@@ -22,7 +22,7 @@
                         <a class="nav-link" th:href="@{/recipes}">All Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/recipes/create}">Create Recipe</a>
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/recipes/create}">Create Recipe</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/recipes/surprise}">Surprise Me!</a>
