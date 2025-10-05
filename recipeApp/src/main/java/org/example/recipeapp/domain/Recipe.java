@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -35,7 +36,7 @@ public class Recipe {
 
     @NotNull
     @Lob
-    @Column(name = "instructions", nullable = false)
+    @Column(name = "instructions", nullable = false,columnDefinition = "TEXT")
     private String instructions;
 
     @Size(max = 255)
@@ -66,12 +67,14 @@ public class Recipe {
     private Cuisine cuisine;
 
 
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "author_id")
     private org.example.recipeapp.domain.User author;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
 

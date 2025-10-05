@@ -12,7 +12,6 @@ import java.util.Set;
 @Setter
 @Entity
 @Table(name = "categories", schema = "recipe_app")
-
 @NoArgsConstructor
 
 public class Category {

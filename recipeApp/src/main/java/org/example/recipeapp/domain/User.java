@@ -20,7 +20,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Builder
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users", schema = "recipe_app")
 public class User implements UserDetails {
