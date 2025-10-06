@@ -81,3 +81,17 @@ Peng
 - Commit and push current progress.
 3. Where do I need assistance? What do I need to figure out?
 - Might need help debugging DB authentication.
+
+<< Monday 6 Oct 2025 >>
+Peng
+1. What I have done / not done since last Scrum?
+- Separated AuthController and RegisterController to fix duplicate mapping issue.
+- Adjusted SecurityConfig to work with custom login and register pages.
+- Tested and confirmed successful registration and login redirection.
+- Fixed template paths and verified Thymeleaf rendering.
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Refine page design for register, login, and home pages for consistent UI.
+- Commit and push all updates to GitHub.
+- Verify DB data persistence and password encryption.
+3. Where do I need assistance? What do I need to figure out?
+- Might need help integrating role-based redirection after login.
