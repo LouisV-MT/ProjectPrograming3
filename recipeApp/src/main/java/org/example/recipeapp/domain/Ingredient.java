@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.LinkedHashSet;
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "ingredients", schema = "recipe_app")
 public class Ingredient {
     @Id
@@ -24,7 +26,8 @@ public class Ingredient {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @OneToMany(mappedBy = "ingredient")
-    private Set<org.example.recipeapp.domain.RecipeIngredient> recipeIngredients = new LinkedHashSet<>();
+    public Ingredient(String name) {
+        this.name = name;
 
+    }
 }

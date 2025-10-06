@@ -4,11 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "cuisines", schema = "recipe_app")
 public class Cuisine {
     @Id
@@ -18,7 +21,10 @@ public class Cuisine {
 
     @Size(max = 100)
     @NotNull
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name",unique = true, nullable = false, length = 100)
     private String name;
 
+    public Cuisine(String name) {
+        this.name = name;
+    }
 }
