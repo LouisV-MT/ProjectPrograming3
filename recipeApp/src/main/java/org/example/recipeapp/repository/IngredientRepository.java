@@ -1,12 +1,12 @@
 package org.example.recipeapp.repository;
 
-import org.example.recipeapp.domain.Cuisine;
+import org.example.recipeapp.domain.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CuisineRepository extends JpaRepository<Cuisine, Integer> {
-    Optional<Cuisine> findByName(String name);
+public interface IngredientRepository extends JpaRepository<Ingredient, Integer> {
+    Optional<Ingredient> findByName(String tName);
 }

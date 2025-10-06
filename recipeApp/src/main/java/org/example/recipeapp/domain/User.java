@@ -10,10 +10,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Builder
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users", schema = "recipe_app")
 public class User implements UserDetails {

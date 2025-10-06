@@ -1,0 +1,119 @@
+
+:root {
+    --charcoal: #233D4D;
+    --pumpkin: #FE7F2D;
+    --sunglow: #FCCA46;
+    --olivine: #A1C181;
+    --zomp: #619B8A;
+    --light-text: #f8f9fa;
+    --off-white: #fafafa;
+}
+
+
+body {
+    background-color: var(--off-white);
+    color: var(--charcoal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--charcoal);
+    font-weight: 600;
+}
+
+a {
+    color: var(--pumpkin);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--sunglow);
+    text-decoration: underline;
+}
+
+
+.bg-dark {
+    background-color: var(--charcoal) !important;
+}
+
+.navbar-brand {
+    color: var(--sunglow) !important;
+    font-weight: bold;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.navbar .nav-link:hover, .navbar .nav-link.active {
+    color: var(--light-text);
+}
+
+.hero-section {
+    background-color: var(--olivine);
+}
+
+.hero-section .lead {
+    color: var(--charcoal);
+    opacity: 0.9;
+}
+
+
+#about {
+    background-color: #ffffff;
+}
+
+.founder-img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border: 4px solid var(--zomp);
+}
+
+
+.btn-primary {
+    --bs-btn-bg: var(--pumpkin);
+    --bs-btn-border-color: var(--pumpkin);
+    --bs-btn-hover-bg: #E56E1A;
+    --bs-btn-hover-border-color: #E56E1A;
+    --bs-btn-active-bg: #E56E1A;
+    --bs-btn-active-border-color: #E56E1A;
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--charcoal);
+    --bs-btn-border-color: var(--charcoal);
+    --bs-btn-hover-bg: var(--charcoal);
+    --bs-btn-hover-color: var(--light-text);
+}
+
+.btn-outline-light {
+    --bs-btn-color: var(--sunglow);
+    --bs-btn-border-color: var(--sunglow);
+    --bs-btn-hover-bg: var(--sunglow);
+    --bs-btn-hover-border-color: var(--sunglow);
+    --bs-btn-hover-color: var(--charcoal);
+    --bs-btn-active-bg: var(--sunglow);
+    --bs-btn-active-border-color: var(--sunglow);
+    --bs-btn-active-color: var(--charcoal);
+}
+
+
+.card {
+    border: 1px solid #ddd;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: var(--charcoal);
+    font-weight: bold;
+}
+
+.card-body {
+    background-color: #fff;
+}

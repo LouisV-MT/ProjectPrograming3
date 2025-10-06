@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -35,8 +36,15 @@ public class Review {
     @JoinColumn(name = "user_id", nullable = false)
     private org.example.recipeapp.domain.User user;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "recipe_id", nullable = false)
+    private Recipe recipe;
+
+
     @Column(name = "create_at")
+    @CreationTimestamp
     private Instant createAt;
 
 }
