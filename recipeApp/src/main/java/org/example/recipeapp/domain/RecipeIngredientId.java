@@ -1,38 +1,32 @@
 package org.example.recipeapp.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
 @Getter
 @Setter
-@EqualsAndHashCode
-@Embeddable
+
 public class RecipeIngredientId implements Serializable {
+    private static final long serialVersionUID = -1998596979252132345L;
 
-    @MapsId
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
-
-    @MapsId
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "ingredient_id", nullable = false)
-    private Ingredient ingredient;
-
-    @Size(max = 100)
     @NotNull
-    @Column(name = "measurement", nullable = false, length = 100)
-    private String measurement;
+    @Column(name = "recipe_id", nullable = false)
+    private Integer recipeId;
+
+    @NotNull
+    @Column(name = "ingredient_id", nullable = false)
+    private Integer ingredientId;
+
 
 }
