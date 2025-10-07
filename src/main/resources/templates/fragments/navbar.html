@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+
+<header th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand fs-3" th:href="@{/}">
+                <img th:src="@{/images/Logo.png}" alt="Recipe Today Logo" width="30" height="30" class="d-inline-block align-top me-2">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/recipes}">All Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/recipes/create}">Create Recipe</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/recipes/surprise}">Surprise Me!</a>
+                    </li>
+                </ul>
+
+                <form class="d-flex me-3" th:action="@{/recipes/search}" method="get">
+                    <input class="form-control me-2" type="search" placeholder="Search by name" aria-label="Search" name="keyword">
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                </form>
+
+                <ul class="navbar-nav">
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a th:href="@{/register}" class="btn btn-outline-light me-2">Register</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAnonymous()">
+                        <a th:href="@{/login}" class="btn btn-warning">Log In</a>
+                    </li>
+
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Welcome, <span sec:authentication="name">Username</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUserDropdown">
+                            <li sec:authorize="hasRole('ADMIN')">
+                                <a class="dropdown-item" th:href="@{/admin/import}">Import Recipes</a>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">My Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="d-inline">
+                                    <button type="submit" class="dropdown-item">Sign Out</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+</body>
+</html>
