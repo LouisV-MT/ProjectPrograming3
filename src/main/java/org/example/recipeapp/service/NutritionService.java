@@ -45,7 +45,7 @@ public class NutritionService {
 
         String query = recipe.getRecipeIngredients().stream()
                 .map(ri -> ri.getMeasurement() + " " + ri.getIngredient().getName())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(","));
 
         System.out.println("Fetching nutrition data for query: \n" + query);
         NutritionixRequestDto requestBody = new NutritionixRequestDto(query);

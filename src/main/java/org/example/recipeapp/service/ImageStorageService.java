@@ -35,6 +35,8 @@ public class ImageStorageService {
 
         System.out.println("Successfully uploaded "+fileName);
 
-        return String.format("https://%s.%s/%s", bucketName, endpoint, fileName);
+        String endpointDomain = endpoint.replaceAll("https?://", "");
+
+        return String.format("https://%s.%s/%s", bucketName, endpointDomain, fileName);
     }
 }

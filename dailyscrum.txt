@@ -95,3 +95,19 @@ Peng
 - Verify DB data persistence and password encryption.
 3. Where do I need assistance? What do I need to figure out?
 - Might need help integrating role-based redirection after login.
+Louis
+1. What I have done / not done since last Scrum?
+- Done: Import logic from themealdb, nutrition facts from nutrinix
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Deployment
+3. Where do I need assistance? What do I need to figure out?
+- Nothing
+
+<< Tuesday 7 Oct 2025 >>
+Louis
+1. What I have done / not done since last Scrum?
+Deployment:
+2. What I plan to do from this scrum to next? (next 24 hours)
+Front end
+3. Where do I need assistance? What do I need to figure out?
+Nothing
