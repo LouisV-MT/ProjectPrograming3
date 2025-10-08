@@ -95,3 +95,21 @@ Peng
 - Verify DB data persistence and password encryption.
 3. Where do I need assistance? What do I need to figure out?
 - Might need help integrating role-based redirection after login.
+
+<< Tuesday 7 Oct 2025 >>
+Peng
+1. What I have done / not done since last Scrum?
+- Pulled merged branch (develop-new) and updated local repo.
+- Added .env file and verified environment variables.
+- Checked Lombok configuration and annotation processor settings.
+- Tried running the app but build failed due to DataSource configuration issue.
+- Reviewed teammate’s version (Vu’s branch) and confirmed it works on his side.
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Test different configurations to skip database auto-configuration.
+- Verify Spring profile loading and environment variable setup.
+- Try local MySQL connection if skipping DB still fails.
+- Coordinate with Vu to compare project settings and IntelliJ run configs.
+3. Where do I need assistance? What do I need to figure out?
+- Might need help confirming correct Aiven DB credentials or environment setup.
+- Need clarification whether project should run without DB connection temporarily.
+
