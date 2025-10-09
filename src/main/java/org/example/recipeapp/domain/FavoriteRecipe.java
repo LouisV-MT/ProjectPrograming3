@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "favorite_recipes", schema = "recipe_app")
+@Table(name = "favorite_recipes")
 public class FavoriteRecipe {
     @EmbeddedId
     private FavoriteRecipeId id;

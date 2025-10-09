@@ -34,4 +34,12 @@ public class RecipeService {
     public  Recipe save(Recipe recipe){
         return recipeRepository.save(recipe);
     }
+
+    public List<String> findAllCategories() {
+        return recipeRepository.findAllCategories();
+    }
+
+    public List<String> findAllCuisines() {
+        return recipeRepository.findAllCuisines();
+    }
 }

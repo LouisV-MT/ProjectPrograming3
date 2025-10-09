@@ -16,7 +16,7 @@ import java.util.Collection;
 @Builder
 @Entity
 @AllArgsConstructor
-@Table(name = "users", schema = "recipe_app")
+@Table(name = "users")
 public class User implements UserDetails {
 
     @Id

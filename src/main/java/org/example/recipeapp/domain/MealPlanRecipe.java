@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Entity
-@Table(name = "meal_plan_recipes", schema = "recipe_app")
+@Table(name = "meal_plan_recipes")
 public class MealPlanRecipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

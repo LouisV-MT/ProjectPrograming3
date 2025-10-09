@@ -18,4 +18,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
 
     @Query(value = "SELECT * FROM recipes ORDER BY RAND() LIMIT 1", nativeQuery = true)
     Optional<Recipe> findRandom();
+
+    @Query(value = "SELECT DISTINCT c.name FROM categories c ORDER BY c.name", nativeQuery = true)
+    List<String> findAllCategories();
+
+    @Query(value = "SELECT DISTINCT c.name FROM cuisines c ORDER BY c.name", nativeQuery = true)
+    List<String> findAllCuisines();
 }

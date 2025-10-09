@@ -13,7 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "recipe_ingredients", schema = "recipe_app")
+@Table(name = "recipe_ingredients")
 public class RecipeIngredient {
     @EmbeddedId
     private RecipeIngredientId id;

@@ -51,7 +51,7 @@ public class RecipeController {
         return sb.toString();
     }
 
-    @GetMapping
+    @GetMapping //List all recipes will move to admin controller
     public String listRecipes(Model model){
         List<Recipe> recipes = recipeService.findAll();
         model.addAttribute("recipes",recipes);
@@ -62,7 +62,18 @@ public class RecipeController {
     public String showRecipe(@PathVariable Integer id, Model model){
         Optional<Recipe> recipeOptional= recipeService.findRecipeById(id);
         if(recipeOptional.isPresent()){
-            model.addAttribute("recipe",recipeOptional.get());
+            Recipe recipe= recipeOptional.get();
+            model.addAttribute("recipe",recipe);
+            String imageUrl= recipe.getImageUrl();
+            if (recipe.getInstructions() != null) {
+                String[] instructionSteps = recipe.getInstructions().split("\\r?\\n");
+                model.addAttribute("instructionSteps", instructionSteps);
+            }
+            if(imageUrl != null && imageUrl.contains(".s3.")){
+                String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+                String presignedUrl = imageStorageService.generatePresignedUrl(objectKey);
+                model.addAttribute("presignedImageUrl", presignedUrl);
+            }
             return  "recipes/detail";
         } else {
             System.err.println("Recipe not found");

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="nutrition-label" th:fragment="nutritionLabel(nutrition)">
+    <div class="nutrition-header">
+        <h1>Nutrition Facts</h1>
+        <p>Serving Size: 1 serving</p>
+    </div>
+    <div class="nutrition-facts">
+        <div class="fact-row amount-per-serving">
+            <span>Amount Per Serving</span>
+        </div>
+        <div class="fact-row calories">
+            <span>Calories</span>
+            <span th:text="${nutrition.calories}">0</span>
+        </div>
+        <div class="fact-row daily-value">
+            <span>% Daily Value*</span>
+        </div>
+        <div class="fact-row">
+            <span><strong>Total Fat</strong> <span th:text="${#numbers.formatDecimal(nutrition.fat, 1, 1)} + 'g'">0g</span></span>
+        </div>
+        <div class="fact-row">
+            <span><strong>Total Carbohydrate</strong> <span th:text="${#numbers.formatDecimal(nutrition.carbs, 1, 1)} + 'g'">0g</span></span>
+        </div>
+        <div class="fact-row">
+            <span><strong>Protein</strong> <span th:text="${#numbers.formatDecimal(nutrition.protein, 1, 1)} + 'g'">0g</span></span>
+        </div>
+    </div>
+    <div class="nutrition-footer">
+        <p>*Percent Daily Values are based on a 2,000 calorie diet.</p>
+    </div>
+</div>
+
+</body>
+</html>

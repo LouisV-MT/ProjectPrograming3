@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "cuisines", schema = "recipe_app")
+@Table(name = "cuisines")
 public class Cuisine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

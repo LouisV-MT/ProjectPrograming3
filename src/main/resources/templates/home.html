@@ -1,53 +1,69 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
+    <title>Home — Recipe Hub</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe App - Home</title>
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">🍳 RecipeApp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">My Recipes</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Favorites</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-warning" href="/logout">Logout</a>
-                </li>
-            </ul>
+<body style="background-color: var(--light-tan);">
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container my-4">
+    <section class="p-3 mb-4 bg-white rounded shadow-sm sticky-top">
+        <form class="row g-3 align-items-end">
+            <div class="col-md">
+                <label for="filter-category" class="form-label fw-bold">Category</label>
+                <select id="filter-category" name="category" class="form-select">
+                    <option value="" selected>All Categories</option>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"></option>
+                </select>
+            </div>
+            <div class="col-md">
+                <label for="filter-cuisine" class="form-label fw-bold">Cuisine</label>
+                <select id="filter-cuisine" name="cuisine" class="form-select">
+                    <option value="" selected>All Cuisines</option>
+                    <option th:each="cui : ${cuisines}" th:value="${cui}" th:text="${cui}"></option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
+        </form>
+    </section>
+
+    <section>
+        <div class="text-center mb-4">
+            <h1 class="display-5">All Recipes</h1>
+            <p class="lead" style="color: var(--forest-green);">Browse our latest dishes from every category and cuisine.</p>
         </div>
-    </div>
-</nav>
 
-<!-- Welcome Section -->
-<div class="container text-center mt-5">
-    <h2 class="fw-bold">Welcome to RecipeApp! 🎉</h2>
-    <p class="lead text-muted">You have successfully logged in.</p>
-    <hr class="my-4">
-    <p>Explore and share your favorite recipes with others.</p>
-    <a href="#" class="btn btn-primary btn-lg">View Recipes</a>
-</div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class="col" th:each="recipe : ${recipes}">
+                <div class="card h-100 recipe-card shadow-sm">
+                    <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="recipe-card-link">
+                        <img th:src="${recipe.imageUrl != null ? recipe.imageUrl : '/images/placeholder.png'}"
+                             class="card-img-top recipe-image" alt="Recipe Image">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${recipe.name}">Recipe Name</h5>
+                            <div class="recipe-meta">
+                                <span th:if="${recipe.category}" th:text="${recipe.category.name}">Category</span>
+                                <span th:if="${recipe.category != null and recipe.cuisine != null}" class="mx-1">•</span>
+                                <span th:if="${recipe.cuisine}" th:text="${recipe.cuisine.name}">Cuisine</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
-<footer class="text-center text-muted mt-5 mb-3">
-    <small>© 2025 RecipeApp by Minh-Triet & Peng</small>
-</footer>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
