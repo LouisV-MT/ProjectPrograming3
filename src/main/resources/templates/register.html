@@ -14,8 +14,8 @@
                 <div class="card-body p-4">
                     <h3 class="text-center mb-4 fw-bold text-success">Create an Account</h3>
 
-                    <form th:action="@{/register}" method="post">
-                        <div class="mb-3">
+                    <form th:action="@{/register}" method="post" novalidate>
+                    <div class="mb-3">
                             <label class="form-label">Username</label>
                             <input type="text" name="username" class="form-control" placeholder="Choose a username" required>
                         </div>
