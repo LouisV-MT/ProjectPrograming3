@@ -157,3 +157,14 @@ Louis
 - Create and edit form
 3. Where do I need assistance? What do I need to figure out?
 - Nothing
+Peng
+1. What I have done / not done since last Scrum?
+- Done: Admin dashboard UI and access control, user management (delete & promote)
+- Done: Admin recipe import from TheMealDB API
+- Done: Added recipe management page (view, import)
+- Not done: Edit and delete recipe features (in progress)
+2. What I plan to do from this scrum to next? (next 24 hours)
+- Implement delete and edit recipe functions in admin panel
+- Improve UI with toast messages and better navigation
+3. Where do I need assistance? What do I need to figure out?
+- None for now
