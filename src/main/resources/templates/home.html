@@ -15,8 +15,8 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="container my-4">
-    <section class="p-3 mb-4 bg-white rounded shadow-sm sticky-top">
-        <form class="row g-3 align-items-end">
+    <section class="p-3 mb-4 bg-white rounded shadow-sm ">
+        <form th:action="@{/home}" method="get" class="row g-3 align-items-end">
             <div class="col-md">
                 <label for="filter-category" class="form-label fw-bold">Category</label>
                 <select id="filter-category" name="category" class="form-select">

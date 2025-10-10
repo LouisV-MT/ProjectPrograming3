@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipe Hub — Your recipe for today</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -12,7 +11,7 @@
 
     <link rel="stylesheet" th:href="@{/style.css}">
 </head>
-<body>
+<body id="page-index">
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
@@ -29,10 +28,10 @@
                     <p class="lead"> You don't need complicated steps to make a masterpiece. Explore recipes that celebrate the pure, honest flavor of fresh ingredients.</p>
                     <blockquote class="blockquote fst-italic my-4">
                         <p class="mb-1">"You don't have to cook fancy or complicated masterpieces—just good food from fresh ingredients." </p>
-                        <footer class="blockquote-footer">- Julia Child</footer>
+                        <footer class="blockquote-footer"> Julia Child</footer>
                     </blockquote>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <a th:href="@{/recipes}" class="btn btn-primary btn-lg px-4 me-md-2">View Recipes</a>
+                        <a th:href="@{/home}" class="btn btn-primary btn-lg px-4 me-md-2">View Recipes</a>
                         <a href="#about" class="btn btn-outline-secondary btn-lg px-4">About Us</a>
                     </div>
                 </div>

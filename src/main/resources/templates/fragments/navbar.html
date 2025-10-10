@@ -4,34 +4,28 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark wywe-navbar sticky-top" th:fragment="navbar">
     <div class="container">
-        <a class="navbar-brand" th:href="@{/}">
-            <img th:src="@{/images/logo.png}" alt="Recipe Hub Logo" class="brand-logo">
-            Recipe Hub
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/home}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/recipes}">Recipes</a>
-                </li>
+        <div class="navbar-left-side">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/Logo.png}" alt="Recipe Hub Logo" class="brand-logo">
+                Recipe Hub
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/recipes/my-recipes}">My Recipes</a></li>
+                <li class="nav-item" sec:authorize="isAuthenticated()"><a class="nav-link" th:href="@{/recipes/create}">Create Recipe</a></li>
             </ul>
+        </div>
 
+        <div class="navbar-right-side">
             <form class="d-flex" role="search" th:action="@{/recipes/search}" method="get">
-                <input class="form-control me-2" type="search" name="keyword" placeholder="Search recipes..." aria-label="Search">
+                <input class="form-control" type="search" name="keyword" placeholder="Search..." aria-label="Search">
             </form>
 
-            <div class="navbar-nav ms-lg-3" sec:authorize="isAnonymous()">
+            <div sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="btn btn-outline-light me-2">Log In</a>
                 <a th:href="@{/register}" class="btn btn-light wywe-btn-register">Register</a>
             </div>
-
-            <div class="navbar-nav ms-lg-3" sec:authorize="isAuthenticated()">
+            <div sec:authorize="isAuthenticated()">
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Welcome, <span sec:authentication="name">User</span>
@@ -40,7 +34,7 @@
                         <li><a class="dropdown-item" th:href="@{/profile}">My Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <form th:action="@{/logout}" method="post" class="d-inline">
+                            <form th:action="@{/logout}" method="post">
                                 <button type="submit" class="dropdown-item">Logout</button>
                             </form>
                         </li>
@@ -48,6 +42,10 @@
                 </div>
             </div>
         </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
     </div>
 </nav>
 

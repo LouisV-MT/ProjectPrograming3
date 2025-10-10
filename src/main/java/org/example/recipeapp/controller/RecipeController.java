@@ -86,17 +86,25 @@ public class RecipeController {
         List<Recipe> searchResults = recipeService.searchRecipes(keyword);
         model.addAttribute("recipes", searchResults);
         model.addAttribute("keyword", keyword);
+        model.addAttribute("title", "Search Results for " + keyword);
         return "recipes/list";
 
+    }
+
+    @GetMapping("/my-recipes")
+    public String showMyRecipes(Model model, Authentication authentication){
+        User currentUser = (User) authentication.getPrincipal();
+        List<Recipe> myRecipes = recipeService.findByAuthor(currentUser);
+
+        model.addAttribute("recipes", myRecipes);
+        model.addAttribute("title", "My Recipes");
+        return "recipes/list";
     }
 
     @GetMapping("/surprise")
     public String showSurprise(){
         Optional<Recipe> RandomRecipe = recipeService.findRandomRecipe();
-        if(RandomRecipe.isPresent()){
-            return "redirect:/recipes/" + RandomRecipe.get().getId();
-        }
-        return "redirect:/recipes";
+        return RandomRecipe.map(recipe -> "redirect:/recipes/" + recipe.getId()).orElse("redirect:/recipes");
     }
 
     @GetMapping("/create")
@@ -160,7 +168,7 @@ public class RecipeController {
                 String recipeName = toTitleCase(existingRecipe.getName());
                 String author = toTitleCase(currentUser.getUsername());
                 String extension = getFileExtension(imageFile.getOriginalFilename());
-                String newFileName = "recipeof" + recipeName + "By" + author + extension;
+                String newFileName = "recipeOf" + recipeName + "By" + author + extension;
 
                 String imageUrl = imageStorageService.upload(imageFile, newFileName);
                 existingRecipe.setImageUrl(imageUrl);
