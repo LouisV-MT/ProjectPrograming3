@@ -20,13 +20,13 @@ public class SecurityConfig {
     @Autowired
     private JpaUserDetailsService userDetailsService;
 
-    // ✅ 使用 BCrypt 加密
+    // ✅ 密码加密方式
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ✅ 将自定义的 JPA 用户服务注册进 Spring Security
+    // ✅ 注册 JPA 用户服务
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -35,33 +35,49 @@ public class SecurityConfig {
         return authProvider;
     }
 
-    // ✅ Security 主过滤链
+    // ✅ 主安全配置
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/images/**", "/register", "/login", "/css/**", "/js/**","/home","/recipes/search","/style.css").permitAll()
-                        .requestMatchers( "/recipes/my-recipes", "/recipes/create").authenticated()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/register", "/login", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
+
+                // ✅ 登录页配置
                 .formLogin(form -> form
-                        .loginPage("/login")               // 自定义登录页
-                        .defaultSuccessUrl("/home", true)  // 登录成功跳转主页
+                        .loginPage("/login")
                         .permitAll()
+                        // 登录成功后根据角色跳转
+                        .successHandler((request, response, authentication) -> {
+                            var authorities = authentication.getAuthorities();
+                            boolean isAdmin = authorities.stream()
+                                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                            if (isAdmin) {
+                                response.sendRedirect("/admin/dashboard");
+                            } else {
+                                response.sendRedirect("/home");
+                            }
+                        })
                 )
+
+                // ✅ 登出配置
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout") // 登出后跳转
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
-                .authenticationProvider(authenticationProvider()) // ✅ 关键：让 Security 使用你的 JPA 登录逻辑
-                .csrf(csrf -> csrf.disable()); // 先禁用 CSRF 方便测试
+
+                // ✅ 使用 JPA 认证
+                .authenticationProvider(authenticationProvider())
+
+                // ⚠️ 暂时禁用 CSRF（后期可打开）
+                .csrf(csrf -> csrf.disable());
 
         return http.build();
     }
 
-    // ✅ AuthenticationManager（如果将来要写登录 API 或自定义验证会用到）
+    // ✅ AuthenticationManager（备用）
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
