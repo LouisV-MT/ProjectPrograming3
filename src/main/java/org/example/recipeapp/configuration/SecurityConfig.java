@@ -67,6 +67,11 @@ public class SecurityConfig {
                         })
                 )
 
+                // ✅ 异常处理：禁止访问页面
+                .exceptionHandling(ex -> ex
+                        .accessDeniedPage("/access-denied")   // 🚫 普通用户访问 admin 时跳转
+                )
+
                 // ✅ 登出配置
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -77,7 +82,7 @@ public class SecurityConfig {
                 // ✅ 使用 JPA 认证
                 .authenticationProvider(authenticationProvider())
 
-                // ⚠️ 暂时禁用 CSRF（后期可打开）
+                // ⚠️ 暂时禁用 CSRF（方便测试）
                 .csrf(csrf -> csrf.disable());
 
         return http.build();

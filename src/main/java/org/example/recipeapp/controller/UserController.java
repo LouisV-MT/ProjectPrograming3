@@ -14,7 +14,7 @@ public class UserController {
     private UserRepository userRepository;
 
     //For admin: list all user
-    @GetMapping("/admin/users")
+    @GetMapping("/users")
     public String listUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "users";
