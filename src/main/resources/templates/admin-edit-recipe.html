@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Recipe | RecipeApp</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light py-5">
+
+<div class="container" style="max-width: 700px;">
+  <h2 class="text-success text-center fw-bold mb-4">✏️ Edit Recipe</h2>
+
+  <form th:action="@{'/admin/recipes/update/' + ${recipe.id}}" method="post" class="card p-4 shadow-sm bg-white">
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Recipe Name</label>
+      <input type="text" name="name" th:value="${recipe.name}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Instructions</label>
+      <textarea name="instructions" rows="5" class="form-control"
+                th:text="${recipe.instructions}" placeholder="Enter cooking steps"></textarea>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Image URL</label>
+      <input type="text" name="imageUrl" th:value="${recipe.imageUrl}" class="form-control">
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <a href="/admin/recipes" class="btn btn-outline-secondary">⬅ Cancel</a>
+      <button type="submit" class="btn btn-success">💾 Save Changes</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

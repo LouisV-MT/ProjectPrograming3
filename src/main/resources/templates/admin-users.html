@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users | RecipeApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- ✅ 成功提示 Toast -->
+<div th:if="${successMessage}"
+     class="position-fixed top-0 end-0 p-3"
+     style="z-index: 1055;">
+    <div class="toast align-items-center text-bg-success border-0 show" role="alert">
+        <div class="d-flex">
+            <div class="toast-body" th:text="${successMessage}"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ 顶部导航 -->
+<nav class="navbar navbar-dark bg-dark px-3">
+    <h4 class="text-white mb-0">Manage Users</h4>
+    <div>
+        <a href="/admin/dashboard" class="btn btn-outline-light btn-sm me-2">← Dashboard</a>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h3 class="text-center text-success mb-4 fw-bold">👥 User Management</h3>
+
+    <table class="table table-striped table-hover shadow-sm bg-white align-middle">
+        <thead class="table-success">
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th class="text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.role}"></td>
+            <td class="text-center">
+
+                <!-- 👑 提升为 Admin -->
+                <form th:action="@{'/admin/make-admin/' + ${user.id}}" method="post"
+                      onsubmit="return confirm('👑 Promote this user to Admin?')"
+                      th:if="${user.role.name() != 'ADMIN'}"
+                      style="display:inline-block;">
+                    <button type="submit" class="btn btn-sm btn-warning">Make Admin</button>
+                </form>
+
+                <!-- ❌ 删除用户 -->
+                <form th:action="@{'/admin/delete/' + ${user.id}}" method="post"
+                      onsubmit="return confirm('⚠️ Are you sure you want to delete this user?')"
+                      th:if="${user.username != 'admin'}"
+                      style="display:inline-block;">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ 自动隐藏 Toast -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toastEl = document.querySelector('.toast');
+        if (toastEl) {
+            setTimeout(() => {
+                const toast = new bootstrap.Toast(toastEl);
+                toast.hide();
+            }, 5000);
+        }
+    });
+</script>
+
+</body>
+</html>

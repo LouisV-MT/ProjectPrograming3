@@ -7,69 +7,31 @@
 </head>
 <body class="bg-light">
 
-<!-- ✅ 成功删除提示 Toast -->
-<div th:if="${successMessage}"
-     class="position-fixed top-0 end-0 p-3"
-     style="z-index: 1055;">
-    <div class="toast align-items-center text-bg-success border-0 show" role="alert">
-        <div class="d-flex">
-            <div class="toast-body" th:text="${successMessage}"></div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Close"></button>
+<nav class="navbar navbar-dark bg-dark px-3">
+    <h4 class="text-white mb-0">Admin Dashboard</h4>
+    <a href="/logout" class="btn btn-outline-light btn-sm">Logout</a>
+</nav>
+
+<div class="container text-center my-5">
+    <h2 class="text-success mb-4 fw-bold">Welcome, Admin!</h2>
+
+    <div class="row justify-content-center g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="fw-bold">Manage Users</h4>
+                <p>View, edit, or delete user accounts.</p>
+                <a href="/admin/users" class="btn btn-success px-4">Go</a>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="fw-bold">Manage Recipes</h4>
+                <p>Add, update, or remove recipes.</p>
+                <a href="/admin/recipes" class="btn btn-success px-4">Go</a>
+            </div>
         </div>
     </div>
 </div>
-
-<div class="container mt-5">
-    <h2 class="text-center text-success mb-4 fw-bold">👑 Admin Dashboard</h2>
-
-    <div class="text-end mb-3">
-        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
-    </div>
-
-    <table class="table table-striped table-hover shadow-sm bg-white">
-        <thead class="table-success">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}"></td>
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.role}"></td>
-            <td>
-                <!-- ✅ 确认删除提示框 -->
-                <form th:action="@{'/admin/delete/' + ${user.id}}" method="post"
-                      onsubmit="return confirm('⚠️ Are you sure you want to delete this user?')"
-                      th:if="${user.username != 'admin'}">
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- ✅ 自动隐藏 toast（5秒后） -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const toastEl = document.querySelector('.toast');
-        if (toastEl) {
-            setTimeout(() => {
-                const toast = new bootstrap.Toast(toastEl);
-                toast.hide();
-            }, 5000);
-        }
-    });
-</script>
 
 </body>
 </html>
