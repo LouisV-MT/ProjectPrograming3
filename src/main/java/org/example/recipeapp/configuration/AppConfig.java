@@ -10,15 +10,15 @@ public class AppConfig {
 
     @Bean
     @Qualifier("mealDbWebClient")
-    public WebClient mealDbWebclient(){
+    public WebClient mealDbWebclient() {
         return WebClient.builder()
-                .baseUrl("https://www.themealdb.com/api/json/v1/1/")
+                .baseUrl("https://www.themealdb.com/api/json/v1/1")
                 .build();
     }
 
     @Bean
     @Qualifier("edamamWebClient")
-        public WebClient edamamWebClient(){
+    public WebClient edamamWebClient() {
         return WebClient.builder()
                 .baseUrl("https://api.edamam.com/")
                 .build();
@@ -26,7 +26,7 @@ public class AppConfig {
 
     @Bean
     @Qualifier("nutritionixWebClient")
-    public WebClient nutritionixWebClient(){
+    public WebClient nutritionixWebClient() {
         return WebClient.builder()
                 .baseUrl("https://trackapi.nutritionix.com/")
                 .build();
