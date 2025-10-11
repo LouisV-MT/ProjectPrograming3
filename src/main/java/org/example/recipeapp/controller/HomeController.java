@@ -1,5 +1,7 @@
 package org.example.recipeapp.controller;
 
+import org.example.recipeapp.domain.Category;
+import org.example.recipeapp.domain.Cuisine;
 import org.example.recipeapp.domain.Recipe;
 import org.example.recipeapp.service.RecipeService;
 import org.springframework.stereotype.Controller;
@@ -27,8 +29,8 @@ public class HomeController {
         if (principal != null) {
             model.addAttribute("username", principal.getName());
             List<Recipe> filteredRecipes=recipeService.filterRecipes(category, cuisine);
-            List<String> categories= recipeService.findAllCategories();
-            List<String> cuisines= recipeService.findAllCuisines();
+            List<Category> categories= recipeService.findAllCategories();
+            List<Cuisine> cuisines= recipeService.findAllCuisines();
 
             model.addAttribute("recipes", filteredRecipes);
             model.addAttribute("categories", categories);

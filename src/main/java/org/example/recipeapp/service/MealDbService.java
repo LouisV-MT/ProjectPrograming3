@@ -52,8 +52,8 @@ public class MealDbService {
     }
 
     private Recipe saveRecipeFromMealDb(MealDBDto.Meal mealData, User author) {
-        Category category = categoryRepository.findByName(mealData.getCategory()).orElseGet(() -> categoryRepository.save(new Category(mealData.getCategory())));
-        Cuisine cuisine = cuisineRepository.findByName(mealData.getArea()).orElseGet(() -> cuisineRepository.save(new Cuisine(mealData.getArea())));
+        Category category = categoryRepository.findByNameIgnoreCase(mealData.getCategory()).orElseGet(() -> categoryRepository.save(new Category(mealData.getCategory())));
+        Cuisine cuisine = cuisineRepository.findByNameIgnoreCase(mealData.getArea()).orElseGet(() -> cuisineRepository.save(new Cuisine(mealData.getArea())));
 
         Recipe recipe = new Recipe();
         recipe.setExternalId(mealData.getId());

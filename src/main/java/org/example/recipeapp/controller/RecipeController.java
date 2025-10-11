@@ -43,7 +43,7 @@ public class RecipeController {
         String[] parts = input.split("[_\\s]+");
         StringBuilder sb = new StringBuilder();
         for (String part : parts) {
-            if (part.length() > 0) {
+            if (!part.isEmpty()) {
                 sb.append(Character.toUpperCase(part.charAt(0)))
                         .append(part.substring(1).toLowerCase());
             }
@@ -51,12 +51,12 @@ public class RecipeController {
         return sb.toString();
     }
 
-    @GetMapping //List all recipes will move to admin controller
-    public String listRecipes(Model model){
-        List<Recipe> recipes = recipeService.findAll();
-        model.addAttribute("recipes",recipes);
-        return "recipes/list";
-    }
+//    @GetMapping //List all recipes will move to admin controller
+//    public String listRecipes(Model model){
+//        List<Recipe> recipes = recipeService.findAll();
+//        model.addAttribute("recipes",recipes);
+//        return "recipes/list";
+//    }
 
     @GetMapping("/{id}")
     public String showRecipe(@PathVariable Integer id, Model model){
@@ -110,6 +110,8 @@ public class RecipeController {
     @GetMapping("/create")
     public String showCreateRecipeForm(Model model){
         model.addAttribute("recipe",new Recipe());
+        model.addAttribute("categories", recipeService.findAllCategories());
+        model.addAttribute("cuisines", recipeService.findAllCuisines());
         return "recipes/create-form";
     }
 
@@ -125,6 +127,8 @@ public class RecipeController {
 
             }
             model.addAttribute("recipe",recipe);
+            model.addAttribute("categories", recipeService.findAllCategories());
+            model.addAttribute("cuisines", recipeService.findAllCuisines());
             return "recipes/edit-form";
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Recipe not found.");
@@ -134,12 +138,14 @@ public class RecipeController {
 
     @PostMapping
     public String saveOrUpdateRecipe(@ModelAttribute Recipe recipe,
-                                     @RequestParam("imageFile")MultipartFile imageFile,
+                                     @RequestParam("imageFile") MultipartFile imageFile,
+                                     @RequestParam(name = "newCategoryName", required = false) String newCategoryName,
+                                     @RequestParam(name = "newCuisineName", required = false) String newCuisineName,
                                      Authentication authentication,
                                      RedirectAttributes redirectAttributes) throws IOException {
         User currentUser = (User) authentication.getPrincipal();
 
-        //Validate for image file
+
         if(!imageFile.isEmpty()){
             String contentType= imageFile.getContentType();
             if(contentType == null || (!contentType.equals("image/jpeg") && !contentType.equals("image/png"))){
@@ -148,23 +154,28 @@ public class RecipeController {
             }
         }
 
-        if(recipe.getId() != null){
-            //Update logic
-            Recipe existingRecipe= recipeService.findRecipeById(recipe.getId())
+
+        if (recipe.getId() != null) {
+            // --- UPDATE LOGIC ---
+            Recipe existingRecipe = recipeService.findRecipeById(recipe.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Recipe not found."));
 
-            if(existingRecipe.getAuthor() == null || !existingRecipe.getAuthor().getId().equals(currentUser.getId())){
+            if (existingRecipe.getAuthor() == null || !existingRecipe.getAuthor().getId().equals(currentUser.getId())) {
                 redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to edit this recipe.");
                 return "redirect:/recipes";
-
             }
+
+
             existingRecipe.setName(recipe.getName());
             existingRecipe.setInstructions(recipe.getInstructions());
             existingRecipe.setCategory(recipe.getCategory());
             existingRecipe.setCuisine(recipe.getCuisine());
             existingRecipe.setSourceUrl(recipe.getSourceUrl());
             existingRecipe.setVideoUrl(recipe.getVideoUrl());
-            if(!imageFile.isEmpty()){
+
+            existingRecipe.setRecipeIngredients(recipe.getRecipeIngredients());
+
+            if (!imageFile.isEmpty()) {
                 String recipeName = toTitleCase(existingRecipe.getName());
                 String author = toTitleCase(currentUser.getUsername());
                 String extension = getFileExtension(imageFile.getOriginalFilename());
@@ -173,14 +184,16 @@ public class RecipeController {
                 String imageUrl = imageStorageService.upload(imageFile, newFileName);
                 existingRecipe.setImageUrl(imageUrl);
             }
-            Recipe updatedRecipe= recipeService.save(existingRecipe);
+
+            Recipe updatedRecipe = recipeService.save(existingRecipe, newCategoryName, newCuisineName);
             nutritionService.updateRecipeWithNutrition(updatedRecipe);
             redirectAttributes.addFlashAttribute("successMessage", "Recipe updated successfully.");
             return "redirect:/recipes/" + updatedRecipe.getId();
+
         } else {
-            //Create logic
-            String imageUrl= null;
-            if(!imageFile.isEmpty()) {
+            // --- CREATE LOGIC ---
+            String imageUrl = null;
+            if (!imageFile.isEmpty()) {
                 String recipeName = toTitleCase(recipe.getName());
                 String author = toTitleCase(currentUser.getUsername());
                 String extension = getFileExtension(imageFile.getOriginalFilename());
@@ -189,7 +202,8 @@ public class RecipeController {
             }
             recipe.setAuthor(currentUser);
             recipe.setImageUrl(imageUrl);
-            Recipe savedRecipe= recipeService.save(recipe);
+
+            Recipe savedRecipe = recipeService.save(recipe, newCategoryName, newCuisineName);
             nutritionService.updateRecipeWithNutrition(savedRecipe);
             redirectAttributes.addFlashAttribute("successMessage", "Recipe created successfully.");
             return "redirect:/recipes/" + savedRecipe.getId();
