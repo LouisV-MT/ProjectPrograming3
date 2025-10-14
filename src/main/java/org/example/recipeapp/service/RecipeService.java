@@ -16,13 +16,6 @@ public class RecipeService {
     private final CuisineRepository cuisineRepository;
     private final ImageStorageService imageStorageService;
 
-    public List<Recipe> filterRecipes(String category, String cuisine){
-        if ((category == null || category.isEmpty()) && (cuisine == null || cuisine.isEmpty())) {
-            return findAll();
-        }
-        return recipeRepository.filterRecipes(category, cuisine);
-    }
-
     public RecipeService(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, CategoryRepository categoryRepository, CuisineRepository cuisineRepository, ImageStorageService imageStorageService) {
         this.recipeRepository = recipeRepository;
         this.ingredientRepository = ingredientRepository;
@@ -31,47 +24,56 @@ public class RecipeService {
         this.imageStorageService = imageStorageService;
     }
 
+    public List<Recipe> filterRecipes(String category, String cuisine) {
+        if ((category == null || category.isEmpty()) && (cuisine == null || cuisine.isEmpty())) {
+            return findAll();
+        }
+        return recipeRepository.filterRecipes(category, cuisine);
+    }
+
     public List<Recipe> findAll() {
         return recipeRepository.findAll();
     }
 
-    public Optional<Recipe> findRecipeById(Integer id){return recipeRepository.findById(id);}
+    public Optional<Recipe> findRecipeById(Integer id) {
+        return recipeRepository.findById(id);
+    }
 
-    public List<Recipe> searchRecipes(String searchText){
+    public List<Recipe> searchRecipes(String searchText) {
         return recipeRepository.findByNameContainingIgnoreCase(searchText);
     }
 
-    public Optional<Recipe> findRandomRecipe(){
+    public Optional<Recipe> findRandomRecipe() {
         return recipeRepository.findRandom();
     }
 
     public void addPresignedUrlsToRecipes(List<Recipe> recipes) {
         for (Recipe recipe : recipes) {
             String imageUrl = recipe.getImageUrl();
-            if (imageUrl == null || imageUrl.isBlank()){
+            if (imageUrl == null || imageUrl.isBlank()) {
                 continue;
             }
-            if (recipe.getImageUrl() != null && recipe.getImageUrl().contains(".s3.")) {
+            if (imageUrl.contains(".s3.")) {
                 try {
-                    String objectKey = recipe.getImageUrl().substring(recipe.getImageUrl().lastIndexOf('/') + 1);
+                    String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
                     String presignedUrl = imageStorageService.generatePresignedUrl(objectKey);
                     recipe.setPresignedImageUrl(presignedUrl);
                 } catch (Exception e) {
                     System.err.println("Error generating presigned URL for recipe " + recipe.getId() + ": " + e.getMessage());
                     recipe.setPresignedImageUrl(null);
                 }
-                } else {
+            } else {
                 recipe.setPresignedImageUrl(imageUrl);
             }
         }
     }
 
     @Transactional
-    public void deleteRecipe(Integer id){
-        Recipe recipe= recipeRepository.findById(id).orElse(null);
-        if(recipe != null){
+    public void deleteRecipe(Integer id) {
+        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        if (recipe != null) {
             String imageUrl = recipe.getImageUrl();
-            if (imageUrl == null && imageUrl.contains(".s3.")) {
+            if (imageUrl != null && imageUrl.contains(".s3.")) {
                 try {
                     String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
                     imageStorageService.delete(objectKey);
@@ -83,6 +85,17 @@ public class RecipeService {
         }
     }
 
+    public void deleteRecipeImage(String imageUrl) {
+        if (imageUrl != null && imageUrl.contains(".s3.")) {
+            try {
+                String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
+                imageStorageService.delete(objectKey);
+            } catch (Exception e) {
+                System.err.println("Failed to delete image: " + imageUrl);
+                e.printStackTrace();
+            }
+        }
+    }
 
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
@@ -95,47 +108,69 @@ public class RecipeService {
     public List<Recipe> findByAuthor(User currentUser) {
         return recipeRepository.findAllByAuthor(currentUser);
     }
+
     @Transactional
-    public Recipe save(Recipe recipe, String newCategoryName, String newCuisineName) {
+    public Recipe save(Recipe recipeFromForm, String newCategoryName, String newCuisineName) {
 
+        final Recipe recipeToSave;
 
-        if (recipe.getCategory() != null && recipe.getCategory().getId() == null && newCategoryName != null && !newCategoryName.trim().isEmpty()) {
+        if (recipeFromForm.getId() != null) {
+            recipeToSave = recipeRepository.findById(recipeFromForm.getId())
+                    .orElseThrow(() -> new IllegalStateException("Recipe not found for update."));
+
+            recipeToSave.setName(recipeFromForm.getName());
+            recipeToSave.setInstructions(recipeFromForm.getInstructions());
+            recipeToSave.setVideoUrl(recipeFromForm.getVideoUrl());
+            recipeToSave.setSourceUrl(recipeFromForm.getSourceUrl());
+            if (recipeFromForm.getImageUrl() != null) {
+                recipeToSave.setImageUrl(recipeFromForm.getImageUrl());
+            }
+            recipeToSave.setAuthor(recipeFromForm.getAuthor());
+        } else {
+            recipeToSave = recipeFromForm;
+        }
+
+        if (recipeFromForm.getCategory() != null && recipeFromForm.getCategory().getId() == null && newCategoryName != null && !newCategoryName.trim().isEmpty()) {
             Category category = categoryRepository.findByNameIgnoreCase(newCategoryName.trim())
                     .orElseGet(() -> categoryRepository.save(new Category(newCategoryName.trim())));
-            recipe.setCategory(category);
+            recipeToSave.setCategory(category);
+        } else {
+            recipeToSave.setCategory(recipeFromForm.getCategory());
         }
 
-
-        if (recipe.getCuisine() != null && recipe.getCuisine().getId() == null && newCuisineName != null && !newCuisineName.trim().isEmpty()) {
+        if (recipeFromForm.getCuisine() != null && recipeFromForm.getCuisine().getId() == null && newCuisineName != null && !newCuisineName.trim().isEmpty()) {
             Cuisine cuisine = cuisineRepository.findByNameIgnoreCase(newCuisineName.trim())
                     .orElseGet(() -> cuisineRepository.save(new Cuisine(newCuisineName.trim())));
-            recipe.setCuisine(cuisine);
+            recipeToSave.setCuisine(cuisine);
+        } else {
+            recipeToSave.setCuisine(recipeFromForm.getCuisine());
         }
 
+        List<RecipeIngredient> formIngredients = new ArrayList<>(recipeFromForm.getRecipeIngredients());
+        recipeToSave.getRecipeIngredients().clear();
+        recipeRepository.flush();
 
-        List<RecipeIngredient> processedIngredients = new ArrayList<>();
-        if (recipe.getRecipeIngredients() != null) {
-            for (RecipeIngredient ri : recipe.getRecipeIngredients()) {
-                Ingredient formIngredient = ri.getIngredient();
-                if (formIngredient != null && formIngredient.getName() != null && !formIngredient.getName().trim().isEmpty()) {
-                    ri.setId(new RecipeIngredientId());
-                    Ingredient ingredientToUse = ingredientRepository
-                            .findByNameIgnoreCase(formIngredient.getName().trim())
-                            .orElseGet(() -> ingredientRepository.save(new Ingredient(formIngredient.getName().trim())));
+        for (RecipeIngredient formRi : formIngredients) {
+            Ingredient formIngredient = formRi.getIngredient();
+            if (formIngredient != null && formIngredient.getName() != null && !formIngredient.getName().trim().isEmpty()) {
 
+                Ingredient ingredientToUse = ingredientRepository
+                        .findByNameIgnoreCase(formIngredient.getName().trim())
+                        .orElseGet(() -> ingredientRepository.save(new Ingredient(formIngredient.getName().trim())));
 
-                    ri.setIngredient(ingredientToUse);
-                    ri.setRecipe(recipe);
-                    processedIngredients.add(ri);
-                }
+                RecipeIngredient newRi = new RecipeIngredient();
+                newRi.setId(new RecipeIngredientId());
+                newRi.setIngredient(ingredientToUse);
+                newRi.setMeasurement(formRi.getMeasurement());
+                newRi.setRecipe(recipeToSave);
+
+                recipeToSave.getRecipeIngredients().add(newRi);
             }
         }
 
-        recipe.getRecipeIngredients().clear();
-        recipe.getRecipeIngredients().addAll(processedIngredients);
-
-        return recipeRepository.save(recipe);
+        return recipeRepository.save(recipeToSave);
     }
+
     public List<String> parseInstructions(String instructions) {
         if (instructions == null || instructions.isBlank()) {
             return Collections.emptyList();
@@ -157,5 +192,13 @@ public class RecipeService {
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .collect(Collectors.toList());
+    }
+
+    public Optional<Category> findCategoryById(Integer id) {
+        return categoryRepository.findById(id);
+    }
+
+    public Optional<Cuisine> findCuisineById(Integer id) {
+        return cuisineRepository.findById(id);
     }
 }

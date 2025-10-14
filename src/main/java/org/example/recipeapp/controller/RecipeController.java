@@ -1,5 +1,7 @@
 package org.example.recipeapp.controller;
 
+import org.example.recipeapp.domain.Category;
+import org.example.recipeapp.domain.Cuisine;
 import org.example.recipeapp.domain.Recipe;
 import org.example.recipeapp.domain.User;
 import org.example.recipeapp.service.ImageStorageService;
@@ -128,12 +130,28 @@ public class RecipeController {
     @PostMapping
     public String saveOrUpdateRecipe(@ModelAttribute Recipe recipe,
                                      @RequestParam("imageFile") MultipartFile imageFile,
+                                     @RequestParam(name = "categoryId", required = false) String categoryId,
+                                     @RequestParam(name = "cuisineId", required = false) String cuisineId,
                                      @RequestParam(name = "newCategoryName", required = false) String newCategoryName,
                                      @RequestParam(name = "newCuisineName", required = false) String newCuisineName,
                                      Authentication authentication,
                                      RedirectAttributes redirectAttributes) throws IOException {
-        User currentUser = (User) authentication.getPrincipal();
 
+        if (categoryId != null && !categoryId.equals("NEW") && !categoryId.isEmpty()) {
+            recipeService.findCategoryById(Integer.parseInt(categoryId))
+                    .ifPresent(recipe::setCategory);
+        } else {
+            recipe.setCategory(new Category());
+        }
+
+        if (cuisineId != null && !cuisineId.equals("NEW") && !cuisineId.isEmpty()) {
+            recipeService.findCuisineById(Integer.parseInt(cuisineId))
+                    .ifPresent(recipe::setCuisine);
+        } else {
+            recipe.setCuisine(new Cuisine());
+        }
+
+        User currentUser = (User) authentication.getPrincipal();
 
         if(!imageFile.isEmpty()){
             String contentType= imageFile.getContentType();
@@ -143,54 +161,49 @@ public class RecipeController {
             }
         }
 
-
         if (recipe.getId() != null) {
-            // --- UPDATE LOGIC ---
+            //  UPDATE LOGIC ---
             Recipe existingRecipe = recipeService.findRecipeById(recipe.getId())
                     .orElseThrow(() -> new IllegalArgumentException("Recipe not found."));
 
             if (existingRecipe.getAuthor() == null || !existingRecipe.getAuthor().getId().equals(currentUser.getId())) {
                 redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to edit this recipe.");
-                return "redirect:/recipes";
+                return "redirect:/home";
             }
 
-
-            existingRecipe.setName(recipe.getName());
-            existingRecipe.setInstructions(recipe.getInstructions());
-            existingRecipe.setCategory(recipe.getCategory());
-            existingRecipe.setCuisine(recipe.getCuisine());
-            existingRecipe.setSourceUrl(recipe.getSourceUrl());
-            existingRecipe.setVideoUrl(recipe.getVideoUrl());
-
-            existingRecipe.setRecipeIngredients(recipe.getRecipeIngredients());
-
+            String oldImageUrl = existingRecipe.getImageUrl();
             if (!imageFile.isEmpty()) {
-                String recipeName = toTitleCase(existingRecipe.getName());
+                String recipeName = toTitleCase(recipe.getName());
                 String author = toTitleCase(currentUser.getUsername());
                 String extension = getFileExtension(imageFile.getOriginalFilename());
                 String newFileName = "recipeOf" + recipeName + "By" + author + extension;
-
-                String imageUrl = imageStorageService.upload(imageFile, newFileName);
-                existingRecipe.setImageUrl(imageUrl);
+                String newImageUrl = imageStorageService.upload(imageFile, newFileName);
+                recipe.setImageUrl(newImageUrl);
+            } else {
+                recipe.setImageUrl(oldImageUrl);
             }
 
-            Recipe updatedRecipe = recipeService.save(existingRecipe, newCategoryName, newCuisineName);
-            nutritionService.updateRecipeWithNutrition(updatedRecipe);
+            Recipe savedRecipe = recipeService.save(recipe, newCategoryName, newCuisineName);
+
+            if (oldImageUrl != null && !imageFile.isEmpty() && !oldImageUrl.equals(savedRecipe.getImageUrl())) {
+                recipeService.deleteRecipeImage(oldImageUrl);
+            }
+
+            nutritionService.updateRecipeWithNutrition(savedRecipe);
             redirectAttributes.addFlashAttribute("successMessage", "Recipe updated successfully.");
-            return "redirect:/recipes/" + updatedRecipe.getId();
+            return "redirect:/recipes/" + savedRecipe.getId();
 
         } else {
             // --- CREATE LOGIC ---
-            String imageUrl = null;
             if (!imageFile.isEmpty()) {
                 String recipeName = toTitleCase(recipe.getName());
                 String author = toTitleCase(currentUser.getUsername());
                 String extension = getFileExtension(imageFile.getOriginalFilename());
                 String newFileName = "recipeof" + recipeName + "By" + author + extension;
-                imageUrl = imageStorageService.upload(imageFile, newFileName);
+                String imageUrl = imageStorageService.upload(imageFile, newFileName);
+                recipe.setImageUrl(imageUrl);
             }
             recipe.setAuthor(currentUser);
-            recipe.setImageUrl(imageUrl);
 
             Recipe savedRecipe = recipeService.save(recipe, newCategoryName, newCuisineName);
             nutritionService.updateRecipeWithNutrition(savedRecipe);

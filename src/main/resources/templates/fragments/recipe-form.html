@@ -34,7 +34,7 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="category-select" class="form-label">Category</label>
-            <select id="category-select" name="category" class="form-select" onchange="handleCategoryChange(this)">
+            <select id="category-select" name="categoryId" class="form-select" onchange="handleCategoryChange(this)">
                 <option value="">Select a Category</option>
                 <option th:each="cat : ${categories}"
                         th:value="${cat.id}"
@@ -47,7 +47,7 @@
         </div>
         <div class="col-md-6">
             <label for="cuisine-select" class="form-label">Cuisine</label>
-            <select id="cuisine-select" name="cuisine" class="form-select" onchange="handleCuisineChange(this)">
+            <select id="cuisine-select" name="cuisineId" class="form-select" onchange="handleCuisineChange(this)">
                 <option value="">Select a Cuisine</option>
                 <option th:each="cui : ${cuisines}"
                         th:value="${cui.id}"
@@ -59,7 +59,6 @@
             <input type="text" id="new-cuisine-name" name="newCuisineName" class="form-control mt-2" placeholder="Enter new cuisine name" style="display: none;">
         </div>
     </div>
-    ```
     <div class="mb-3">
         <label for="imageFile" class="form-label">Recipe Image</label>
         <input type="file" id="imageFile" name="imageFile" class="form-control">
