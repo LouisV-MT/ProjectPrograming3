@@ -29,7 +29,7 @@
                     <div class="list-card-actions">
                         <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-info">View</a>
                         <a th:href="@{/recipes/edit/{id}(id=${recipe.id})}" class="btn btn-warning"
-                           th:if="${#authorization.expression('isAuthenticated()') and (#authorization.expression('hasRole(''ADMIN'')') or (recipe.author != null and #authentication.principal.username == recipe.author.username))}">
+                           th:if="${#authorization.expression('hasRole(''ADMIN'')') or (#authorization.expression('isAuthenticated()') and recipe.author != null and #authentication.principal.id == recipe.author.id)}">
                             Edit
                         </a>
                     </div>

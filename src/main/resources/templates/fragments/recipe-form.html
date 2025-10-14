@@ -34,23 +34,32 @@
     <div class="row mb-3">
         <div class="col-md-6">
             <label for="category-select" class="form-label">Category</label>
-            <select id="category-select" class="form-select" th:field="*{category}" onchange="handleCategoryChange(this)">
+            <select id="category-select" name="category" class="form-select" onchange="handleCategoryChange(this)">
                 <option value="">Select a Category</option>
-                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${recipe.category != null and cat.id == recipe.category.id}">
+                </option>
                 <option value="NEW">** Add New Category **</option>
             </select>
             <input type="text" id="new-category-name" name="newCategoryName" class="form-control mt-2" placeholder="Enter new category name" style="display: none;">
         </div>
         <div class="col-md-6">
             <label for="cuisine-select" class="form-label">Cuisine</label>
-            <select id="cuisine-select" class="form-select" th:field="*{cuisine}" onchange="handleCuisineChange(this)">
+            <select id="cuisine-select" name="cuisine" class="form-select" onchange="handleCuisineChange(this)">
                 <option value="">Select a Cuisine</option>
-                <option th:each="cui : ${cuisines}" th:value="${cui.id}" th:text="${cui.name}"></option>
+                <option th:each="cui : ${cuisines}"
+                        th:value="${cui.id}"
+                        th:text="${cui.name}"
+                        th:selected="${recipe.cuisine != null and cui.id == recipe.cuisine.id}">
+                </option>
                 <option value="NEW">** Add New Cuisine **</option>
             </select>
             <input type="text" id="new-cuisine-name" name="newCuisineName" class="form-control mt-2" placeholder="Enter new cuisine name" style="display: none;">
         </div>
     </div>
+    ```
     <div class="mb-3">
         <label for="imageFile" class="form-label">Recipe Image</label>
         <input type="file" id="imageFile" name="imageFile" class="form-control">

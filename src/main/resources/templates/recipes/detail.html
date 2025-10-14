@@ -55,9 +55,10 @@
                     </li>
                 </ul>
 
-                <div th:if="${recipe.nutritionInfo}"
-                     th:replace="~{fragments/nutrition-label :: nutritionLabel(nutrition=${recipe.nutritionInfo})}">
-                </div>
+                <th:block th:if="${recipe.nutritionInfo}">
+                    <div th:replace="~{fragments/nutrition-label :: nutritionLabel(nutrition=${recipe.nutritionInfo})}">
+                    </div>
+                </th:block>
             </div>
 
             <div class="col-lg-8">
