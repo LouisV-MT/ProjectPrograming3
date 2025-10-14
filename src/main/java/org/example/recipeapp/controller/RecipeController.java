@@ -51,29 +51,20 @@ public class RecipeController {
         return sb.toString();
     }
 
-//    @GetMapping //List all recipes will move to admin controller
-//    public String listRecipes(Model model){
-//        List<Recipe> recipes = recipeService.findAll();
-//        model.addAttribute("recipes",recipes);
-//        return "recipes/list";
-//    }
 
     @GetMapping("/{id}")
     public String showRecipe(@PathVariable Integer id, Model model){
         Optional<Recipe> recipeOptional= recipeService.findRecipeById(id);
         if(recipeOptional.isPresent()){
             Recipe recipe= recipeOptional.get();
-            model.addAttribute("recipe",recipe);
-            String imageUrl= recipe.getImageUrl();
-            if (recipe.getInstructions() != null) {
-                String[] instructionSteps = recipe.getInstructions().split("\\r?\\n");
-                model.addAttribute("instructionSteps", instructionSteps);
-            }
+            List<String> instructionSteps = recipeService.parseInstructions(recipe.getInstructions());
+            model.addAttribute("instructionSteps", instructionSteps);
             recipeService.addPresignedUrlsToRecipes(List.of(recipe));
+            model.addAttribute("recipe",recipe);
             return  "recipes/detail";
         } else {
             System.err.println("Recipe not found");
-            return "redirect:/recipes";
+            return "redirect:/home";
         }
     }
 

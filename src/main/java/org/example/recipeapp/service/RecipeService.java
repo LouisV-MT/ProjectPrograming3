@@ -5,9 +5,8 @@ import org.example.recipeapp.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -136,5 +135,27 @@ public class RecipeService {
         recipe.getRecipeIngredients().addAll(processedIngredients);
 
         return recipeRepository.save(recipe);
+    }
+    public List<String> parseInstructions(String instructions) {
+        if (instructions == null || instructions.isBlank()) {
+            return Collections.emptyList();
+        }
+
+        String stepPattern = "(?i)\\s*(step|\\d+)[\\s.:?-]*\\d*";
+
+        boolean looksLikeSteps = instructions.matches("(?s).*\\n\\s*\\d+\\..*") ||
+                instructions.toLowerCase().contains("step");
+
+        if (looksLikeSteps) {
+            return Arrays.stream(instructions.split(stepPattern))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .collect(Collectors.toList());
+        }
+
+        return Arrays.stream(instructions.split("\\r?\\n"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
     }
 }
