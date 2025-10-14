@@ -39,11 +39,10 @@
         </div>
 
         <div class="text-center my-4">
-            <img th:if="${presignedImageUrl}" th:src="${presignedImageUrl}"
-                 class="img-fluid rounded recipe-main-image" alt="Recipe Image">
-
-            <img th:if="${presignedImageUrl == null and recipe.imageUrl != null}" th:src="${recipe.imageUrl}"
-                 class="img-fluid rounded recipe-main-image" alt="Recipe Image">
+            <div class="text-center my-4">
+                <img th:src="${recipe.presignedImageUrl != null ? recipe.presignedImageUrl : '/images/placeholder.png'}"
+                     class="img-fluid rounded recipe-main-image" alt="Recipe Image">
+            </div>
         </div>
 
         <div class="row g-5 mt-4">

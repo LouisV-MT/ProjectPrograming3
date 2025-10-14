@@ -4,15 +4,12 @@ import org.example.recipeapp.domain.Role;
 import org.example.recipeapp.domain.User;
 import org.example.recipeapp.domain.Recipe;
 import org.example.recipeapp.repository.UserRepository;
-import org.example.recipeapp.repository.RecipeRepository;
 import org.example.recipeapp.service.MealDbService;
+import org.example.recipeapp.service.NutritionService;
 import org.example.recipeapp.service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -21,16 +18,17 @@ import java.util.List;
 @Controller
 public class AdminController {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final MealDbService mealDbService;
+    private final RecipeService recipeService;
+    private final NutritionService nutritionService;
 
-    @Autowired
-    private RecipeRepository recipeRepository;
-
-    @Autowired
-    private MealDbService mealDbService;
-    @Autowired
-    private RecipeService recipeService;
+    public AdminController(UserRepository userRepository, MealDbService mealDbService, RecipeService recipeService, NutritionService nutritionService) {
+        this.userRepository = userRepository;
+        this.mealDbService = mealDbService;
+        this.recipeService = recipeService;
+        this.nutritionService = nutritionService;
+    }
 
     // ✅ Dashboard 首页
     @GetMapping("/admin/dashboard")
@@ -80,8 +78,9 @@ public class AdminController {
     // ✅ 显示食谱管理页面
     @GetMapping("/admin/recipes")
     public String showRecipeManagementPage(Model model) {
-        List<Recipe> recipes = recipeRepository.findAll();
-        model.addAttribute("recipes", recipes != null ? recipes : List.of());
+        List<Recipe> recipes = recipeService.findAll();
+        recipeService.addPresignedUrlsToRecipes(recipes);
+        model.addAttribute("recipes", recipes);
         return "admin-recipes";
     }
 
@@ -103,6 +102,7 @@ public class AdminController {
 
         Recipe imported = mealDbService.importRecipeById(id, author);
         if (imported != null) {
+            nutritionService.updateRecipeWithNutrition(imported);
             redirectAttributes.addFlashAttribute("successMessage",
                     "✅ Recipe imported successfully: " + imported.getName());
         } else {
@@ -115,42 +115,44 @@ public class AdminController {
     // ✅ 删除菜谱
     @PostMapping("/admin/recipes/delete/{id}")
     public String deleteRecipe(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        if (recipeRepository.existsById(id)) {
-            recipeService.deleteRecipe(id);
-            redirectAttributes.addFlashAttribute("successMessage", "🗑️ Recipe deleted successfully!");
-        } else {
-            redirectAttributes.addFlashAttribute("errorMessage", "⚠️ Recipe not found.");
-        }
+        recipeService.deleteRecipe(id);
+        redirectAttributes.addFlashAttribute("successMessage", "🗑️ Recipe deleted successfully!");
         return "redirect:/admin/recipes";
     }
 
     // ✅ 显示编辑页面
     @GetMapping("/admin/recipes/edit/{id}")
     public String showEditRecipeForm(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
-        Recipe recipe = recipeRepository.findById(id).orElse(null);
+        Recipe recipe = recipeService.findRecipeById(id).orElse(null);
         if (recipe == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "⚠️ Recipe not found.");
             return "redirect:/admin/recipes";
         }
         model.addAttribute("recipe", recipe);
+        model.addAttribute("categories", recipeService.findAllCategories());
+        model.addAttribute("cuisines", recipeService.findAllCuisines());
         return "admin-edit-recipe";
     }
 
     // ✅ 更新菜谱
-    @PostMapping("/admin/recipes/update/{id}")
-    public String updateRecipe(@PathVariable Integer id,
-                               Recipe updatedRecipe,
+    @PostMapping("/admin/recipes/update")
+    public String updateRecipe(@ModelAttribute Recipe recipe,
+                               @RequestParam(name = "newCategoryName", required = false) String newCategoryName,
+                               @RequestParam(name = "newCuisineName", required = false) String newCuisineName,
                                RedirectAttributes redirectAttributes) {
-        Recipe existingRecipe = recipeRepository.findById(id).orElse(null);
-        if (existingRecipe == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "⚠️ Recipe not found.");
-            return "redirect:/admin/recipes";
-        }
 
-        existingRecipe.setName(updatedRecipe.getName());
-        existingRecipe.setInstructions(updatedRecipe.getInstructions());
-        existingRecipe.setImageUrl(updatedRecipe.getImageUrl());
-        recipeRepository.save(existingRecipe);
+        Recipe existingRecipe = recipeService.findRecipeById(recipe.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Recipe not found for update."));
+
+        existingRecipe.setName(recipe.getName());
+        existingRecipe.setInstructions(recipe.getInstructions());
+        existingRecipe.setCategory(recipe.getCategory());
+        existingRecipe.setCuisine(recipe.getCuisine());
+        existingRecipe.setSourceUrl(recipe.getSourceUrl());
+        existingRecipe.setVideoUrl(recipe.getVideoUrl());
+        existingRecipe.setRecipeIngredients(recipe.getRecipeIngredients());
+
+        recipeService.save(existingRecipe, newCategoryName, newCuisineName);
 
         redirectAttributes.addFlashAttribute("successMessage",
                 "✅ Recipe updated successfully: " + existingRecipe.getName());
