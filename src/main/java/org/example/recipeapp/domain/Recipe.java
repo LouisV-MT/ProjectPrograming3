@@ -68,6 +68,9 @@ public class Recipe {
     @JoinColumn(name="cuisine_id")
     private Cuisine cuisine;
 
+    @Transient
+    private String presignedImageUrl;
+
 
 
     @ManyToOne(fetch = FetchType.LAZY)

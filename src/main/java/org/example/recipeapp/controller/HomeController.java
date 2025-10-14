@@ -31,6 +31,7 @@ public class HomeController {
             List<Recipe> filteredRecipes=recipeService.filterRecipes(category, cuisine);
             List<Category> categories= recipeService.findAllCategories();
             List<Cuisine> cuisines= recipeService.findAllCuisines();
+            recipeService.addPresignedUrlsToRecipes(filteredRecipes);
 
             model.addAttribute("recipes", filteredRecipes);
             model.addAttribute("categories", categories);

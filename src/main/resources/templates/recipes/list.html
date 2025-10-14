@@ -23,8 +23,8 @@
 
             <div class="col" th:each="recipe : ${recipes}">
                 <div class="list-card">
-                    <img th:src="${recipe.imageUrl != null ? recipe.imageUrl : '/images/placeholder.png'}"
-                         class="list-card-img" alt="Recipe Image">
+                    <img th:src="${recipe.presignedImageUrl != null ? recipe.presignedImageUrl : '/images/placeholder.png'}"
+                         class="card-img-top recipe-image" alt="Recipe Image">
 
                     <div class="list-card-actions">
                         <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="btn btn-info">View</a>

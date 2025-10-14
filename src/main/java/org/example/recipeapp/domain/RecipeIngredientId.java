@@ -16,16 +16,14 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @Setter
-
+@EqualsAndHashCode
 public class RecipeIngredientId implements Serializable {
     private static final long serialVersionUID = -1998596979252132345L;
 
-    @NotNull
-    @Column(name = "recipe_id", nullable = false)
+
     private Integer recipeId;
 
-    @NotNull
-    @Column(name = "ingredient_id", nullable = false)
+
     private Integer ingredientId;
 
 

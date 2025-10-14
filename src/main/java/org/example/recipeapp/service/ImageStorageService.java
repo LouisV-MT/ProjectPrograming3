@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -61,5 +62,23 @@ public class ImageStorageService {
 
         PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
         return presignedRequest.url().toExternalForm();
+    }
+
+    public void delete(String objectKey){
+        if (objectKey == null || objectKey.isBlank()){
+            return;
+        }
+        try{
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(objectKey)
+                    .build();
+            s3Client.deleteObject(deleteObjectRequest);
+            System.out.println("Successfully deleted file from S3: " + objectKey);
+
+        }catch (Exception e) {
+            System.err.println("Error deleting file from S3: " + objectKey);
+            e.printStackTrace();
+        }
     }
 }

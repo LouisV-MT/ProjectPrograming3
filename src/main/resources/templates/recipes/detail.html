@@ -15,8 +15,27 @@
 <div class="container my-5">
     <div class="bg-white p-4 p-md-5 rounded shadow-sm">
 
-        <div class="recipe-title-container">
-            <h1 class="recipe-title" th:text="${recipe.name}">Recipe Title</h1>
+        <div class="recipe-title-container d-flex justify-content-between align-items-center">
+
+            <h1 class="recipe-title mb-0" th:text="${recipe.name}">Recipe Title</h1>
+
+            <div class="recipe-links">
+
+                <a th:if="${recipe.videoUrl != null and !recipe.videoUrl.isBlank()}"
+                   th:href="${recipe.videoUrl}"
+                   target="_blank"
+                   class="btn btn-outline-danger me-2">
+                    <i class="bi bi-youtube"></i> Watch Video
+                </a>
+
+                <a th:if="${recipe.sourceUrl != null and !recipe.sourceUrl.isBlank()}"
+                   th:href="${recipe.sourceUrl}"
+                   target="_blank"
+                   class="btn btn-outline-secondary">
+                    <i class="bi bi-link-45deg"></i> View Source
+                </a>
+            </div>
+
         </div>
 
         <div class="text-center my-4">

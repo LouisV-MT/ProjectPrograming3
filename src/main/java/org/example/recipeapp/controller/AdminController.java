@@ -6,6 +6,7 @@ import org.example.recipeapp.domain.Recipe;
 import org.example.recipeapp.repository.UserRepository;
 import org.example.recipeapp.repository.RecipeRepository;
 import org.example.recipeapp.service.MealDbService;
+import org.example.recipeapp.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,8 @@ public class AdminController {
 
     @Autowired
     private MealDbService mealDbService;
+    @Autowired
+    private RecipeService recipeService;
 
     // ✅ Dashboard 首页
     @GetMapping("/admin/dashboard")
@@ -113,7 +116,7 @@ public class AdminController {
     @PostMapping("/admin/recipes/delete/{id}")
     public String deleteRecipe(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         if (recipeRepository.existsById(id)) {
-            recipeRepository.deleteById(id);
+            recipeService.deleteRecipe(id);
             redirectAttributes.addFlashAttribute("successMessage", "🗑️ Recipe deleted successfully!");
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "⚠️ Recipe not found.");

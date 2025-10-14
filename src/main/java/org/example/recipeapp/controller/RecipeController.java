@@ -69,11 +69,7 @@ public class RecipeController {
                 String[] instructionSteps = recipe.getInstructions().split("\\r?\\n");
                 model.addAttribute("instructionSteps", instructionSteps);
             }
-            if(imageUrl != null && imageUrl.contains(".s3.")){
-                String objectKey = imageUrl.substring(imageUrl.lastIndexOf('/') + 1);
-                String presignedUrl = imageStorageService.generatePresignedUrl(objectKey);
-                model.addAttribute("presignedImageUrl", presignedUrl);
-            }
+            recipeService.addPresignedUrlsToRecipes(List.of(recipe));
             return  "recipes/detail";
         } else {
             System.err.println("Recipe not found");
@@ -84,6 +80,7 @@ public class RecipeController {
     @GetMapping("/search")
     public String searchRecipes(@RequestParam("keyword") String keyword, Model model){
         List<Recipe> searchResults = recipeService.searchRecipes(keyword);
+        recipeService.addPresignedUrlsToRecipes(searchResults);
         model.addAttribute("recipes", searchResults);
         model.addAttribute("keyword", keyword);
         model.addAttribute("title", "Search Results for " + keyword);
@@ -95,6 +92,7 @@ public class RecipeController {
     public String showMyRecipes(Model model, Authentication authentication){
         User currentUser = (User) authentication.getPrincipal();
         List<Recipe> myRecipes = recipeService.findByAuthor(currentUser);
+        recipeService.addPresignedUrlsToRecipes(myRecipes);
 
         model.addAttribute("recipes", myRecipes);
         model.addAttribute("title", "My Recipes");
@@ -121,9 +119,9 @@ public class RecipeController {
         User currentUser= (User)  authentication.getPrincipal();
         if(recipeOptional.isPresent()){
             Recipe recipe = recipeOptional.get();
-            if(recipe.getAuthor() ==null || !recipe.getAuthor().equals(currentUser)){
+            if(recipe.getAuthor() == null || !recipe.getAuthor().getId().equals(currentUser.getId())){
                 redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to edit this recipe.");
-                return "redirect:/recipes";
+                return "redirect:/home";
 
             }
             model.addAttribute("recipe",recipe);
@@ -132,7 +130,7 @@ public class RecipeController {
             return "recipes/edit-form";
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Recipe not found.");
-            return "redirect:/recipes";
+            return "redirect:/home";
         }
     }
 

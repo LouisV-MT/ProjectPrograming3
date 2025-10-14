@@ -75,8 +75,8 @@ public class MealDbService {
 
                 if (ingredientName != null && !ingredientName.isBlank()) {
                     System.out.println("Processing ingredient: " + ingredientName);
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientName)
-                            .orElseGet(() -> ingredientRepository.save(new Ingredient(ingredientName)));
+                    Ingredient ingredient = ingredientRepository.findByNameIgnoreCase(ingredientName)
+                            .orElseGet(() -> ingredientRepository.save(new Ingredient(ingredientName.trim())));
 
 
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
